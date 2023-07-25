@@ -22,5 +22,5 @@ services:
 
 networks:
   webnetwork:
-    name: ${NETWORK_NAME:-chore_network}
+    name: ${NETWORK_NAME:-dev_network}
     driver: bridge
