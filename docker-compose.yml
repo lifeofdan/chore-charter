@@ -1,0 +1,26 @@
+version: "3"
+services:
+  nodejs:
+    build:
+      context: .
+    hostname: nodejs
+    ports:
+      - 8000:3000
+    networks:
+      - webnetwork
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - 8080:80
+      - 4433:443
+    volumes:
+      - ./nginx/sites:/etc/nginx/conf.d
+    networks:
+      - webnetwork
+
+networks:
+  webnetwork:
+    name: ${NETWORK_NAME:-chore_network}
+    driver: bridge
