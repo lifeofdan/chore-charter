@@ -1,4 +1,5 @@
 export default defineEventHandler(async (event) => {
+  const body = await readBody(event);
   const query = getQuery(event) as { key: string };
 
   let response = {
@@ -16,6 +17,11 @@ export default defineEventHandler(async (event) => {
       target_url: "https://chore-charter.com/api/redeploy",
     };
   }
+
+  const respond = await $fetch(body.callback_url, {
+    method: "POST",
+    body: response,
+  });
 
   return response;
 });
