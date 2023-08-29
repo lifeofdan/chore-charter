@@ -1,7 +1,10 @@
 import { readFile } from "fs/promises";
 
 export default defineEventHandler(async (event) => {
-  setResponseStatus(event, 200);
-  const redeployStatus = await readFile("./should_redeploy.txt");
-  return redeployStatus;
+  try {
+    const fileContents = await readFile("./should_redeploy.txt");
+    return fileContents;
+  } catch (error) {
+    return "false";
+  }
 });
