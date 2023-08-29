@@ -1,6 +1,9 @@
+import { writeFile } from "fs";
+
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
   const query = getQuery(event) as { key: string };
+
+  setResponseStatus(event, 403);
 
   let response = {
     state: "fail",
@@ -10,6 +13,12 @@ export default defineEventHandler(async (event) => {
   };
 
   if (query.key === process.env.REDEPLOY_SECRET) {
+    setResponseStatus(event, 200);
+
+    writeFile("./should_redeploy.txt", "true", (err) => {
+      if (err) throw `Could not update re-deploy status: ${err}`;
+    });
+
     response = {
       state: "success",
       description: "redeploy succeeded",
@@ -18,10 +27,5 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  const respond = await $fetch(body.callback_url, {
-    method: "POST",
-    body: response,
-  });
-
-  return response;
+  return { server_response: response };
 });
